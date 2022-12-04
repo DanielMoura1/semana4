@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/33</span>
+                <span class='fraction'>31/31</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/33</span>
+                <span class='fraction'>31/31</span>
             </div>
         
             
@@ -121,12 +121,7 @@
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,18 +130,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,7 +147,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -173,7 +163,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -189,77 +178,73 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AddressEnrollment } from "@/protocols";
 import { getAddress } from "@/utils/cep-service";
-import { notFoundError,requestError } from "@/errors";
+import { notFoundError, requestError } from "@/errors";
 import addressRepository, { CreateAddressParams } from "@/repositories/address-repository";
 import bookingRepository from "@/repositories/booking-repository";
 import { exclude } from "@/utils/prisma-utils";
 import { Address, Enrollment } from "@prisma/client";
 &nbsp;
-async function getBooking(id:number) {
-    const user= await bookingRepository.getBooking(id)
-    console.log(user)
-    if(user.length===0 ||user[0].Booking.length===0){
-        throw notFoundError();
-        // mandar erro 404
-    }
-    const res ={
-            id: user[0].Booking[0].id,
-            Room: user[0].Booking[0].Room
-        }
-    
-    console.log(user[0].Booking) 
-    return res //[0].Booking
+async function getBooking(id: number) {
+  const user= await bookingRepository.getBooking(id);
+  if(user.length===0 ||user[0].Booking.length===0) {
+    throw notFoundError();
+  }
+  const res ={
+    id: user[0].Booking[0].id,
+    Room: user[0].Booking[0].Room
+  };
+  return res; 
 }
-async function postBooking(userId:number,roomId:number) {
-    const room = await bookingRepository.GetRoom(roomId)
-    if(room.length===0){
-        throw notFoundError();
-    }
-    const reserva = await bookingRepository.GetRoomBooking(roomId)
-    if(reserva.length&gt;0){
-        //403
-        throw requestError(403,"Forbidden");
-    }
-    const id = await bookingRepository.getUser(userId)
-    if(id[0].Enrollment.length===0 || id.length===0){
-        throw notFoundError();
-    }
-    const user= await bookingRepository.postBooking(userId,roomId)
-    return user
+async function postBooking(userId: number, roomId: number) {
+  const room = await bookingRepository.GetRoom(roomId);
+  if(room.length===0) {
+    throw notFoundError();
+  }
+  const reserva = await bookingRepository.GetRoomBooking(roomId);
+  if(reserva.length&gt;0) {
+    throw requestError(403, "Forbidden");
+  }
+  const id = await bookingRepository.getUser(userId);
+  if(id[0].Enrollment.length===0 || id.length===0) {
+    throw notFoundError();
+  }
+  const Booking= await bookingRepository.postBooking(userId, roomId);
+  return Booking;
 }
-async function putBooking(userId:number,roomId:number,bookingId:number) {
-    const room = await bookingRepository.GetRoom(roomId)
-    if(room.length===0){
-        throw notFoundError();
-    }
-    const reserva = await bookingRepository.GetRoomBooking(roomId)
-    if(reserva.length&gt;0){
-        //403
-        throw requestError(403,"Forbidden");
-    }
-    const ok2 = await bookingRepository.getUserBooking(bookingId)
-    if(userId !==ok2[0].userId){
-        throw notFoundError();
-    }
-    const user= await bookingRepository.PutBooking(bookingId,roomId)
-    return user
+async function putBooking(userId: number, roomId: number, bookingId: number) {
+  const room = await bookingRepository.GetRoom(roomId);
+  if(room.length===0) {
+    throw notFoundError();
+  }
+  const reserva = await bookingRepository.GetRoomBooking(roomId);
+  if(reserva.length&gt;0) {
+    throw requestError(403, "Forbidden");
+  }
+  const idVerification = await bookingRepository.getUserBooking(bookingId);
+  if(userId !==idVerification[0].userId) {
+    throw notFoundError();
+  }
+  const Booking= await bookingRepository.PutBooking(bookingId, roomId);
+  return  Booking;
 }
 &nbsp;
 const bookingService = {
-    getBooking,postBooking,putBooking
-  };
+  getBooking, postBooking, putBooking
+};
   
-  export default bookingService;
-  </pre></td></tr></table></pre>
+export default bookingService;
+  
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Sat Dec 03 2022 12:53:34 GMT-0300 (Horário Padrão de Brasília)
+                at Sun Dec 04 2022 11:32:22 GMT-0300 (Horário Padrão de Brasília)
             </div>
         <script src="../../../prettify.js"></script>
         <script>
